@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "review-notifications-slack-adapter",
+  "prompt": "I added Slack notifications: an adapter in server/src/adapters/notify, a `notifications` service, and a small pure severity scorer in reviewer-core. Review these files for architecture problems and tell me where each thing should live instead.",
+  "assertions": [
+    "Flags that the Notifier interface is defined inside adapters/notify/slack.ts next to its only implementation and should move to the shared ports file (@devdigest/shared adapters.ts)",
+    "Flags that NotificationService imports and instantiates the concrete SlackNotifier (and reads process.env.SLACK_TOKEN) instead of depending on the Notifier port injected via platform/container.ts",
+    "Flags that reviewer-core/src/severity.ts imports node:fs and reads a JSON file at module load, breaking reviewer-core's no-filesystem purity, with weights to be passed in or inlined as data",
+    "Mentions wiring the new adapter through platform/container.ts (with a ContainerOverrides entry for tests)",
+    "Does NOT suggest moving severity.ts out of reviewer-core into server"
+  ]
+}

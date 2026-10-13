@@ -1,0 +1,323 @@
+{
+  "metadata": {
+    "skill_name": "onion-architecture",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-10-07T17:31:46Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 42.9,
+        "tokens": 63358,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that the Notifier interface is defined inside adapters/notify/slack.ts next to its only implementation and should move to the shared ports file (@devdigest/shared adapters.ts)",
+          "passed": true,
+          "evidence": "#2 move Notifier to vendor/shared/adapters.ts"
+        },
+        {
+          "text": "Flags that NotificationService imports and instantiates the concrete SlackNotifier (and reads process.env.SLACK_TOKEN) instead of depending on the Notifier port injected via platform/container.ts",
+          "passed": true,
+          "evidence": "#1 inject Notifier, no process.env in service"
+        },
+        {
+          "text": "Flags that reviewer-core/src/severity.ts imports node:fs and reads a JSON file at module load, breaking reviewer-core's no-filesystem purity, with weights to be passed in or inlined as data",
+          "passed": true,
+          "evidence": "#3 readFileSync breaks reviewer-core purity"
+        },
+        {
+          "text": "Mentions wiring the new adapter through platform/container.ts (with a ContainerOverrides entry for tests)",
+          "passed": true,
+          "evidence": "#5 notifier in ContainerOverrides + container wiring"
+        },
+        {
+          "text": "Does NOT suggest moving severity.ts out of reviewer-core into server",
+          "passed": false,
+          "evidence": "#4 suggests moving scorer to modules/notifications/rules.ts if only notifications uses it"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 55.7,
+        "tokens": 65576,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that the GET /pulls/:prId/labels route in routes.ts queries Drizzle (db.select / prLabels) directly instead of going through the service/repository",
+          "passed": true,
+          "evidence": "#1 GET handler queries Drizzle directly"
+        },
+        {
+          "text": "Flags that the free-plan limit (plan === 'free' && existing.length >= 3) is a business rule living in routes.ts and should move into service.ts",
+          "passed": true,
+          "evidence": "#2 plan limit in route -> service.add"
+        },
+        {
+          "text": "Flags that service.ts imports FastifyRequest / takes `req` and should take plain typed parameters extracted by the route",
+          "passed": true,
+          "evidence": "#3 FastifyRequest in service"
+        },
+        {
+          "text": "Does NOT flag repository.ts as a violation (it correctly uses Drizzle as infrastructure)",
+          "passed": true,
+          "evidence": "'Already fine': repository.ts"
+        },
+        {
+          "text": "Does NOT propose restructuring into horizontal src/domain, src/application, src/infrastructure folders",
+          "passed": true,
+          "evidence": "No folder restructuring proposed"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 40.9,
+        "tokens": 59874,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that service.ts imports the global Drizzle `db` and queries tables directly, and says queries belong in a repository.ts injected into the service",
+          "passed": true,
+          "evidence": "#1 direct Drizzle, add repository.ts"
+        },
+        {
+          "text": "Flags that service.ts does `new Octokit(...)` directly and says it should use the CodeHostClient port (from @devdigest/shared) wired through platform/container.ts",
+          "passed": true,
+          "evidence": "#2 use CodeHostClient port via container.github"
+        },
+        {
+          "text": "Identifies the confidence bucketing as pure domain logic that should be extracted into a pure function, testable with no stubs",
+          "passed": true,
+          "evidence": "#4 pure bucketByConfidence"
+        },
+        {
+          "text": "Proposes a hermetic *.test.ts using stub/fake repo and port (e.g. via ContainerOverrides), keeping .it.test.ts only for the repository",
+          "passed": true,
+          "evidence": "service.test.ts with ContainerOverrides + stub repo; repository.it.test.ts only"
+        },
+        {
+          "text": "Names the root cause as business logic being in the wrong layer, not merely 'mock the modules with vi.mock'",
+          "passed": true,
+          "evidence": "Says vi.mock hides the problem"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 27.5,
+        "tokens": 48661,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that the Notifier interface is defined inside adapters/notify/slack.ts next to its only implementation and should move to the shared ports file (@devdigest/shared adapters.ts)",
+          "passed": true,
+          "evidence": "#1 move Notifier to @devdigest/shared"
+        },
+        {
+          "text": "Flags that NotificationService imports and instantiates the concrete SlackNotifier (and reads process.env.SLACK_TOKEN) instead of depending on the Notifier port injected via platform/container.ts",
+          "passed": true,
+          "evidence": "#2 constructor-inject Notifier, no env"
+        },
+        {
+          "text": "Flags that reviewer-core/src/severity.ts imports node:fs and reads a JSON file at module load, breaking reviewer-core's no-filesystem purity, with weights to be passed in or inlined as data",
+          "passed": true,
+          "evidence": "#4 file I/O at import; inline or pass weights"
+        },
+        {
+          "text": "Mentions wiring the new adapter through platform/container.ts (with a ContainerOverrides entry for tests)",
+          "passed": true,
+          "evidence": "#3 add notifier to ContainerOverrides/buildContainer"
+        },
+        {
+          "text": "Does NOT suggest moving severity.ts out of reviewer-core into server",
+          "passed": true,
+          "evidence": "Says scorer stays in reviewer-core"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 31.7,
+        "tokens": 49277,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that the GET /pulls/:prId/labels route in routes.ts queries Drizzle (db.select / prLabels) directly instead of going through the service/repository",
+          "passed": true,
+          "evidence": "#1 GET route runs Drizzle directly"
+        },
+        {
+          "text": "Flags that the free-plan limit (plan === 'free' && existing.length >= 3) is a business rule living in routes.ts and should move into service.ts",
+          "passed": true,
+          "evidence": "#2 free-plan rule in route"
+        },
+        {
+          "text": "Flags that service.ts imports FastifyRequest / takes `req` and should take plain typed parameters extracted by the route",
+          "passed": true,
+          "evidence": "#4 FastifyRequest in service"
+        },
+        {
+          "text": "Does NOT flag repository.ts as a violation (it correctly uses Drizzle as infrastructure)",
+          "passed": false,
+          "evidence": "#5/#6 criticise repository.ts (returns Drizzle rows, no port, insert may be undefined)"
+        },
+        {
+          "text": "Does NOT propose restructuring into horizontal src/domain, src/application, src/infrastructure folders",
+          "passed": true,
+          "evidence": "No folder restructuring proposed"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 30.0,
+        "tokens": 48476,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags that service.ts imports the global Drizzle `db` and queries tables directly, and says queries belong in a repository.ts injected into the service",
+          "passed": true,
+          "evidence": "#2 move Drizzle to repository.ts"
+        },
+        {
+          "text": "Flags that service.ts does `new Octokit(...)` directly and says it should use the CodeHostClient port (from @devdigest/shared) wired through platform/container.ts",
+          "passed": false,
+          "evidence": "Invents new PrMetaGateway port instead of existing CodeHostClient"
+        },
+        {
+          "text": "Identifies the confidence bucketing as pure domain logic that should be extracted into a pure function, testable with no stubs",
+          "passed": true,
+          "evidence": "#4 pure bucketByConfidence"
+        },
+        {
+          "text": "Proposes a hermetic *.test.ts using stub/fake repo and port (e.g. via ContainerOverrides), keeping .it.test.ts only for the repository",
+          "passed": true,
+          "evidence": "fake ports; .it.test.ts only for repository"
+        },
+        {
+          "text": "Names the root cause as business logic being in the wrong layer, not merely 'mock the modules with vi.mock'",
+          "passed": true,
+          "evidence": "Names layering/injection as cause"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9333,
+        "stddev": 0.1155,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 46.5,
+        "stddev": 8.0299,
+        "min": 40.9,
+        "max": 55.7
+      },
+      "tokens": {
+        "mean": 62936.0,
+        "stddev": 2874.3284,
+        "min": 59874,
+        "max": 65576
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.8667,
+        "stddev": 0.1155,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 29.7333,
+        "stddev": 2.1127,
+        "min": 27.5,
+        "max": 31.7
+      },
+      "tokens": {
+        "mean": 48804.6667,
+        "stddev": 419.3809,
+        "min": 48476,
+        "max": 49277
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.07",
+      "time_seconds": "+16.8",
+      "tokens": "+14131"
+    }
+  },
+  "notes": []
+}

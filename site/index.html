@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Searchable Dev Digest AI marketplace for Claude Code plugins, skills and agents.">
+    <title>DevDigest — AI tools marketplace</title>
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem("dd-theme") === "light" ? "light" : "dark"; } catch (e) {}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="wrap top">
+      <a class="brand" href="#/" aria-label="DevDigest, back to catalog">
+        <span class="logo mono" aria-hidden="true">&gt;_</span><span class="display">DevDigest</span>
+      </a>
+      <nav id="nav" aria-label="Main navigation">
+        <a class="navb" href="#/" data-route="">Catalog</a>
+        <a class="navb" href="#/saved" data-route="saved">Saved <span id="saved-count" class="mono badge-n"></span></a>
+        <a class="navb" href="#/publish" data-route="publish">Publish</a>
+      </nav>
+      <button type="button" class="btn icon" id="theme" aria-label="Switch theme"></button>
+    </header>
+
+    <div id="view"></div>
+
+    <footer class="wrap foot muted">
+      <span id="foot-note">Static catalog · generated at build time</span>
+      <a href="https://github.com/natata7/dev-digest-ai-marketplace">Source on GitHub</a>
+    </footer>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

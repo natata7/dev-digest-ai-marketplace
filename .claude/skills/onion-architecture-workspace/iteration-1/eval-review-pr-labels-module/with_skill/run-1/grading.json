@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "Flags that the GET /pulls/:prId/labels route in routes.ts queries Drizzle (db.select / prLabels) directly instead of going through the service/repository",
+      "passed": true,
+      "evidence": "#1 GET handler queries Drizzle directly"
+    },
+    {
+      "text": "Flags that the free-plan limit (plan === 'free' && existing.length >= 3) is a business rule living in routes.ts and should move into service.ts",
+      "passed": true,
+      "evidence": "#2 plan limit in route -> service.add"
+    },
+    {
+      "text": "Flags that service.ts imports FastifyRequest / takes `req` and should take plain typed parameters extracted by the route",
+      "passed": true,
+      "evidence": "#3 FastifyRequest in service"
+    },
+    {
+      "text": "Does NOT flag repository.ts as a violation (it correctly uses Drizzle as infrastructure)",
+      "passed": true,
+      "evidence": "'Already fine': repository.ts"
+    },
+    {
+      "text": "Does NOT propose restructuring into horizontal src/domain, src/application, src/infrastructure folders",
+      "passed": true,
+      "evidence": "No folder restructuring proposed"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  }
+}

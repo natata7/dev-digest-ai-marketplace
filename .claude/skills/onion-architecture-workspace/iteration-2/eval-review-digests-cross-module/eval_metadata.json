@@ -1,0 +1,12 @@
+{
+  "eval_id": 4,
+  "eval_name": "review-digests-cross-module",
+  "prompt": "I built a `digests` module that builds a ranked summary of a review's findings and posts it to the PR. Files are in the fixture: routes, service, repository, a formatter, the shared ports file, and the container. Do a full architecture review of the backend layering and boundaries, and tell me what to change for each problem.",
+  "assertions": [
+    "Flags that DigestService imports/depends on ReviewRepository from the reviews module and says to go through the reviews module's service (or a narrow port) instead of another module's repository",
+    "Flags that DigestRepository encodes business policy (confidence >= 0.7 threshold and severity-weighted priority ranking) in SQL and says the policy belongs in a pure domain function called by the service",
+    "Flags that the CodeHostClient.getPull port signature returns an Octokit RestEndpointMethodTypes type and says it should return a shared contract type mapped by the adapter",
+    "Flags that routes.ts instantiates DigestRepository/ReviewRepository/DigestService itself instead of the wiring living in platform/container.ts",
+    "Does NOT flag format.ts as a violation (it is correct pure logic)"
+  ]
+}

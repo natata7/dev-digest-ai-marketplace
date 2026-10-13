@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "Flags that service.ts imports the global Drizzle `db` and queries tables directly, and says queries belong in a repository.ts injected into the service",
+      "passed": true,
+      "evidence": "#2 move Drizzle to repository.ts"
+    },
+    {
+      "text": "Flags that service.ts does `new Octokit(...)` directly and says it should use the CodeHostClient port (from @devdigest/shared) wired through platform/container.ts",
+      "passed": false,
+      "evidence": "Invents new PrMetaGateway port instead of existing CodeHostClient"
+    },
+    {
+      "text": "Identifies the confidence bucketing as pure domain logic that should be extracted into a pure function, testable with no stubs",
+      "passed": true,
+      "evidence": "#4 pure bucketByConfidence"
+    },
+    {
+      "text": "Proposes a hermetic *.test.ts using stub/fake repo and port (e.g. via ContainerOverrides), keeping .it.test.ts only for the repository",
+      "passed": true,
+      "evidence": "fake ports; .it.test.ts only for repository"
+    },
+    {
+      "text": "Names the root cause as business logic being in the wrong layer, not merely 'mock the modules with vi.mock'",
+      "passed": true,
+      "evidence": "Names layering/injection as cause"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  }
+}
