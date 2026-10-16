@@ -42,6 +42,7 @@ Run from the repository root:
 claude plugin validate --strict .
 node scripts/build-index.mjs
 node scripts/check-content.mjs
+node scripts/check-public-paths.mjs
 ```
 
 If a plugin changed, validate it directly too:

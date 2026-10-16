@@ -7,7 +7,8 @@ const docsDir = join(root, "docs");
 const output = join(root, "site", "data", "index.json");
 
 const readJson = async (file) => JSON.parse(await readFile(file, "utf8"));
-const exists = async (file) => readFile(file).then(() => true).catch(() => false);
+const marketplacePath = join(root, ".claude-plugin", "marketplace.json");
+const textExtensions = [".md", ".json", ".yaml", ".yml", ".txt"];
 const filesUnder = async (dir) => {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
@@ -24,6 +25,7 @@ const componentType = (file) => {
   if (file.includes("/agents/")) return "agent";
   if (file.includes("/commands/")) return "command";
   if (file.includes("/hooks/")) return "hook";
+  if (file.includes("/lsp/")) return "lsp";
   if (file.endsWith("/.mcp.json")) return "mcp";
   return "document";
 };
@@ -42,7 +44,7 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
   const files = await filesUnder(pluginRoot);
   const content = [];
   for (const file of files) {
-    if (file.endsWith(".md") || file.endsWith(".json")) {
+    if (textExtensions.some((extension) => file.endsWith(extension))) {
       content.push(await readFile(file, "utf8"));
     }
   }
@@ -50,10 +52,10 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
     .filter((file) => !file.endsWith("plugin.json") && componentType(file) !== "document")
     .map((file) => ({ type: componentType(file), path: relative(root, file) }));
   const componentArtifacts = [];
-  for (const file of files.filter((candidate) => ["skill", "agent", "command"].includes(componentType(candidate)))) {
+  for (const file of files.filter((candidate) => ["skill", "agent", "command", "hook", "mcp", "lsp"].includes(componentType(candidate)))) {
     const text = await readFile(file, "utf8");
     const type = componentType(file);
-    const fallbackName = file.split("/").pop().replace(/\.(md|json)$/i, "");
+    const fallbackName = file.split("/").pop().replace(/\.(md|json|yaml|yml|txt)$/i, "");
     componentArtifacts.push({
       id: `${manifest.name}:${type}:${fallbackName}`,
       name: frontmatter(text, "name") || fallbackName,
@@ -84,7 +86,7 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
 }
 
 const documents = [];
-for (const file of await filesUnder(docsDir)) {
+for (const file of [join(root, "README.md"), ...(await filesUnder(docsDir))]) {
   if (!file.endsWith(".md")) continue;
   const text = await readFile(file, "utf8");
   documents.push({
@@ -97,7 +99,34 @@ for (const file of await filesUnder(docsDir)) {
   });
 }
 
+const marketplace = await readJson(marketplacePath);
+const marketplaceArtifact = {
+  id: `marketplace:${marketplace.name}`,
+  name: marketplace.name,
+  type: "marketplace",
+  description: marketplace.description ?? "",
+  sourcePath: ".claude-plugin/marketplace.json",
+  text: JSON.stringify(marketplace)
+};
+const externalArtifacts = (marketplace.plugins ?? [])
+  .filter((entry) => typeof entry.source === "object")
+  .map((entry) => ({
+    id: `${marketplace.name}:external:${entry.name}`,
+    name: entry.name,
+    type: "external-plugin",
+    description: entry.description ?? "External plugin listed by this marketplace.",
+    source: entry.source,
+    sourcePath: ".claude-plugin/marketplace.json",
+    text: JSON.stringify(entry)
+  }));
+
 await mkdir(join(root, "site", "data"), { recursive: true });
-const artifacts = plugins.flatMap((plugin) => [plugin, ...plugin.componentArtifacts]).concat(documents);
-await writeFile(output, `${JSON.stringify({ generatedAt: new Date().toISOString(), artifacts }, null, 2)}\n`);
-console.log(`Indexed ${plugins.length} plugins, ${artifacts.length - plugins.length - documents.length} components, and ${documents.length} documents into ${relative(root, output)}.`);
+const artifacts = [marketplaceArtifact, ...externalArtifacts, ...plugins.flatMap((plugin) => [plugin, ...plugin.componentArtifacts]), ...documents];
+const index = {
+  schemaVersion: 1,
+  generatedAt: new Date().toISOString(),
+  sourceCommit: process.env.SOURCE_COMMIT ?? null,
+  artifacts
+};
+await writeFile(output, `${JSON.stringify(index, null, 2)}\n`);
+console.log(`Indexed ${plugins.length} local plugins, ${artifacts.filter((artifact) => ["skill", "agent", "command", "hook", "mcp", "lsp"].includes(artifact.type)).length} components, ${externalArtifacts.length} external plugins, and ${documents.length} documents into ${relative(root, output)}.`);

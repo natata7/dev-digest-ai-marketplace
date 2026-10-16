@@ -36,6 +36,13 @@ node scripts/rollback.mjs --plugin engineering-paved-path --to engineering-paved
 
 See [RELEASES.md](docs/RELEASES.md) before using `--apply`.
 
+## Install a plugin
+
+```text
+/plugin marketplace add natata7/dev-digest-ai-marketplace
+/plugin install <plugin>@dev-digest-ai-marketplace
+```
+
 ## Add a plugin
 
 Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/PLUGIN-GUIDELINES.md](docs/PLUGIN-GUIDELINES.md). Every plugin must have a matching directory name and `plugin.json.name`, a README, documented dependencies, and no secrets or absolute paths.

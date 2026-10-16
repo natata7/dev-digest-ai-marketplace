@@ -1,5 +1,7 @@
 const REPO = "https://github.com/natata7/dev-digest-ai-marketplace";
-const KINDS = { plugin: "Plugin", skill: "Skill", agent: "Agent", command: "Command" };
+const ADD = "/plugin marketplace add natata7/dev-digest-ai-marketplace";
+let ref = "main"; // replaced by the indexed commit once the index loads
+const KINDS = { marketplace: "Marketplace", plugin: "Plugin", "external-plugin": "External plugin", skill: "Skill", agent: "Agent", command: "Command", hook: "Hook", mcp: "MCP", lsp: "LSP", document: "Document" };
 
 const view = document.querySelector("#view");
 const toast = document.querySelector("#toast");
@@ -13,7 +15,9 @@ const store = {
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const kindLabel = (type) => KINDS[type] ?? type;
 const kindColor = (type) => `var(--k-${KINDS[type] ? type : "other"})`;
-const sourceUrl = (item) => `${REPO}/${item.type === "plugin" ? "tree" : "blob"}/main/${item.sourcePath}`;
+const sourceUrl = (item) => item.type === "external-plugin"
+  ? (item.source?.source === "github" ? `https://github.com/${item.source.repo}` : `${REPO}/blob/${ref}/.claude-plugin/marketplace.json`)
+  : `${REPO}/${["plugin", "marketplace"].includes(item.type) ? "tree" : "blob"}/${ref}/${item.sourcePath}`;
 
 let flashTimer;
 const flash = (message) => {
@@ -72,7 +76,7 @@ const cardHtml = (item, i) => `
     <div class="row"><span><i class="dot" style="background:${kindColor(item.type)}"></i>${esc(kindLabel(item.type))}</span><span class="muted">${item.version ? "v" + esc(item.version) : ""}</span></div>
     <h3 style="margin:0"><a class="open" href="#/tool/${encodeURIComponent(item.id)}">${esc(item.name)}</a></h3>
     <p>${esc(item.description)}</p>
-    <div class="foot-row"><span>${esc(item.author ?? item.parent ?? "")}</span><button type="button" class="btn" data-copy="${esc(item.install)}">Copy install</button></div>
+    <div class="foot-row"><span>${esc(item.author ?? item.parent ?? "")}</span>${item.install ? `<button type="button" class="btn" data-copy="${esc(item.install)}">Copy install</button>` : ""}</div>
   </article>`;
 
 const catalogView = () => {
@@ -121,7 +125,7 @@ const detailView = (id) => {
   const keywords = (item.keywords ?? []).map((k) => `<span class="tag">${esc(k)}</span>`).join("");
   const contents = item.type === "plugin"
     ? (children.length ? children.map((c) => `<li><span class="mono muted" style="font-size:12px">${esc(kindLabel(c.type))}</span><br><a class="open" style="font-size:16px" href="#/tool/${encodeURIComponent(c.id)}">${esc(c.name)}</a><div class="muted" style="font-size:15px;margin-top:4px">${esc(c.description)}</div></li>`).join("") : `<li class="muted">This plugin has no indexed skills, agents or commands.</li>`)
-    : `<li><span class="mono" style="font-size:14px">${esc(item.sourcePath)}</span>${parent ? `<div class="muted" style="margin-top:4px">Part of <a href="#/tool/${encodeURIComponent(parent.id)}">${esc(parent.name)}</a></div>` : ""}</li>`;
+    : `<li><span class="mono" style="font-size:14px">${esc(item.sourcePath)}</span>${item.source ? `<div class="muted" style="margin-top:4px">Source: ${esc(JSON.stringify(item.source))}</div>` : ""}${parent ? `<div class="muted" style="margin-top:4px">Part of <a href="#/tool/${encodeURIComponent(parent.id)}">${esc(parent.name)}</a></div>` : ""}</li>`;
   view.innerHTML = `
     <main class="wrap page">
       <a class="btn" href="#/">← Catalog</a>
@@ -142,9 +146,7 @@ const detailView = (id) => {
           <div class="tabpanel" data-panel="contents" hidden><ul class="list">${contents}</ul></div>
         </div>
         <aside class="panel">
-          <div class="muted" style="font-size:14px">Install in Claude Code</div>
-          <code class="cmd">${esc(item.install)}</code>
-          <button type="button" class="btn primary" style="min-height:52px" data-copy="${esc(item.install)}">Copy install command</button>
+          ${item.install ? `<div class="muted" style="font-size:14px">1. Add the marketplace (once)</div><code class="cmd">${esc(ADD)}</code><button type="button" class="btn" data-copy="${esc(ADD)}" data-msg="Command copied">Copy add command</button><div class="muted" style="font-size:14px">2. Install</div><code class="cmd">${esc(item.install)}</code><button type="button" class="btn primary" style="min-height:52px" data-copy="${esc(item.install)}">Copy install command</button>` : ""}
           <button type="button" class="btn" id="save"></button>
           <a class="btn" href="${esc(sourceUrl(item))}">View source →</a>
         </aside>
@@ -228,10 +230,11 @@ fetch("./data/index.json")
   .then((response) => response.json())
   .then((data) => {
     state.items = data.artifacts
-      .filter((a) => a.type !== "document")
       .map((a) => ({ ...a, description: a.description ?? "", search: `${a.keywords?.join(" ") ?? ""} ${a.text ?? ""}`.toLowerCase() }))
       .sort((a, b) => (a.type === "plugin" ? 0 : 1) - (b.type === "plugin" ? 0 : 1) || a.name.localeCompare(b.name));
-    document.querySelector("#foot-note").textContent = `Static catalog · generated ${data.generatedAt.slice(0, 10)}`;
+    ref = data.sourceCommit ?? ref;
+    const commit = data.sourceCommit ? ` · ${data.sourceCommit.slice(0, 7)}` : "";
+    document.querySelector("#foot-note").textContent = `Static catalog · generated ${data.generatedAt.slice(0, 10)}${commit}`;
     route();
   })
   .catch(() => { view.innerHTML = '<main class="wrap page"><div class="panel empty"><p class="display" style="font-size:22px">Index unavailable</p><p class="muted">Run <span class="mono">node scripts/build-index.mjs</span> and reload.</p></div></main>'; });
