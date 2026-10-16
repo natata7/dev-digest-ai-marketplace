@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "review-pr-labels-module",
+  "prompt": "I just wrote a new `pr-labels` module for the DevDigest server (routes.ts, service.ts, repository.ts). Please review it for backend architecture problems before I open the PR. List each problem with file, what breaks, and the fix.",
+  "assertions": [
+    "Flags that the GET /pulls/:prId/labels route in routes.ts queries Drizzle (db.select / prLabels) directly instead of going through the service/repository",
+    "Flags that the free-plan limit (plan === 'free' && existing.length >= 3) is a business rule living in routes.ts and should move into service.ts",
+    "Flags that service.ts imports FastifyRequest / takes `req` and should take plain typed parameters extracted by the route",
+    "Does NOT flag repository.ts as a violation (it correctly uses Drizzle as infrastructure)",
+    "Does NOT propose restructuring into horizontal src/domain, src/application, src/infrastructure folders"
+  ]
+}

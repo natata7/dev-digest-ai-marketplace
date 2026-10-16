@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "typescript-fullstack-skills",
+  "description": "Stack skills for TypeScript full-stack work: Zod, Fastify, Drizzle, PostgreSQL, React, Next.js, security and diagrams.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Dev Digest AI"
+  },
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "react",
+    "nextjs",
+    "fastify",
+    "zod",
+    "drizzle",
+    "postgresql",
+    "security"
+  ]
+}

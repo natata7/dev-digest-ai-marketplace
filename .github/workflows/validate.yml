@@ -1,0 +1,32 @@
+name: Validate marketplace
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Claude Code
+        run: npm install --global @anthropic-ai/claude-code
+      - name: Validate marketplace
+        run: claude plugin validate --strict .
+      - name: Build search index
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: node scripts/build-index.mjs
+      - name: Check English-only content
+        run: node scripts/check-content.mjs
+      - name: Check public component paths
+        run: node scripts/check-public-paths.mjs
+      - name: Check generated index
+        run: test -s site/data/index.json

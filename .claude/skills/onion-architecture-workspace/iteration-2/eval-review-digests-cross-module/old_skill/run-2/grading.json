@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "Flags that DigestService imports/depends on ReviewRepository from the reviews module and says to go through the reviews module's service (or a narrow port) instead of another module's repository",
+      "passed": true,
+      "evidence": "cross-module ReviewRepository import flagged"
+    },
+    {
+      "text": "Flags that DigestRepository encodes business policy (confidence >= 0.7 threshold and severity-weighted priority ranking) in SQL and says the policy belongs in a pure domain function called by the service",
+      "passed": true,
+      "evidence": "policy (0.7, weights, limit) in SQL flagged"
+    },
+    {
+      "text": "Flags that the CodeHostClient.getPull port signature returns an Octokit RestEndpointMethodTypes type and says it should return a shared contract type mapped by the adapter",
+      "passed": true,
+      "evidence": "Octokit type in CodeHostClient port flagged"
+    },
+    {
+      "text": "Flags that routes.ts instantiates DigestRepository/ReviewRepository/DigestService itself instead of the wiring living in platform/container.ts",
+      "passed": true,
+      "evidence": "route builds repos/service, move to container"
+    },
+    {
+      "text": "Does NOT flag format.ts as a violation (it is correct pure logic)",
+      "passed": true,
+      "evidence": "format.ts called pure/fine"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  }
+}

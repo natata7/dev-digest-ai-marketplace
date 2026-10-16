@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "sdd-engineering",
+  "description": "Specification-driven development workflows from requirements to verification.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Dev Digest AI"
+  },
+  "license": "MIT",
+  "keywords": [
+    "sdd",
+    "specification",
+    "planning",
+    "verification"
+  ]
+}

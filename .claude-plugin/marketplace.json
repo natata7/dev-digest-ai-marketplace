@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "dev-digest-ai-marketplace",
+  "description": "Curated Claude Code plugins, skills, agents, and engineering workflows.",
+  "owner": {
+    "name": "Dev Digest AI",
+    "url": "https://github.com/natata7"
+  },
+  "plugins": [
+    {
+      "name": "engineering-paved-path",
+      "source": "./plugins/engineering-paved-path",
+      "description": "Reusable engineering workflows and delivery guardrails.",
+      "category": "development",
+      "keywords": [
+        "engineering",
+        "workflow",
+        "delivery"
+      ]
+    },
+    {
+      "name": "research-tools",
+      "source": "./plugins/research-tools",
+      "description": "Research, source verification, and evidence-collection workflows.",
+      "category": "research",
+      "keywords": [
+        "research",
+        "sources",
+        "analysis"
+      ]
+    },
+    {
+      "name": "architecture-review",
+      "source": "./plugins/architecture-review",
+      "description": "Architecture review guidance for boundaries, dependencies, and maintainability.",
+      "category": "architecture",
+      "keywords": [
+        "architecture",
+        "review",
+        "design"
+      ]
+    },
+    {
+      "name": "sdd-engineering",
+      "source": "./plugins/sdd-engineering",
+      "description": "Specification-driven development workflows from requirements to verification.",
+      "category": "development",
+      "keywords": [
+        "sdd",
+        "specification",
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "name": "typescript-fullstack-skills",
+      "source": "./plugins/typescript-fullstack-skills",
+      "description": "Stack skills for TypeScript full-stack work: Zod, Fastify, Drizzle, PostgreSQL, React, Next.js, security and diagrams.",
+      "category": "development",
+      "keywords": [
+        "typescript",
+        "react",
+        "fastify",
+        "zod",
+        "security"
+      ]
+    }
+  ]
+}

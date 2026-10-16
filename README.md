@@ -27,6 +27,22 @@ Validate the marketplace:
 claude plugin validate --strict .
 ```
 
+Release and rollback helpers are dry-run by default:
+
+```bash
+node scripts/release.mjs --plugin engineering-paved-path --version 0.2.0
+node scripts/rollback.mjs --plugin engineering-paved-path --to engineering-paved-path-v0.1.0
+```
+
+See [RELEASES.md](docs/RELEASES.md) before using `--apply`.
+
+## Install a plugin
+
+```text
+/plugin marketplace add natata7/dev-digest-ai-marketplace
+/plugin install <plugin>@dev-digest-ai-marketplace
+```
+
 ## Add a plugin
 
 Follow [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/PLUGIN-GUIDELINES.md](docs/PLUGIN-GUIDELINES.md). Every plugin must have a matching directory name and `plugin.json.name`, a README, documented dependencies, and no secrets or absolute paths.
