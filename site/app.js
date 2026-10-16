@@ -60,10 +60,11 @@ const score = (item, terms) => {
   }
   return total;
 };
+const BROWSE_HIDDEN = ["document", "marketplace"]; // reachable via search or their own chip, not the default listing
 const filtered = () => {
   const terms = state.query.toLowerCase().split(/\s+/).filter(Boolean);
   return state.items
-    .filter((item) => state.kind === "all" || item.type === state.kind)
+    .filter((item) => state.kind === "all" ? terms.length > 0 || !BROWSE_HIDDEN.includes(item.type) : item.type === state.kind)
     .map((item) => ({ item, rank: terms.length ? score(item, terms) : 1 }))
     .filter(({ rank }) => rank > 0)
     .sort((a, b) => b.rank - a.rank || a.item.name.localeCompare(b.item.name))
@@ -80,11 +81,11 @@ const cardHtml = (item, i) => `
   </article>`;
 
 const catalogView = () => {
-  const counts = (type) => state.items.filter((i) => type === "all" || i.type === type).length;
+  const counts = (type) => state.items.filter((i) => type === "all" ? !BROWSE_HIDDEN.includes(i.type) : i.type === type).length;
   const kinds = ["all", ...Object.keys(KINDS).filter((k) => counts(k))];
   view.innerHTML = `
     <section class="wrap hero">
-      <p class="eyebrow">// ${state.items.length} tools</p>
+      <p class="eyebrow">// ${counts("all")} tools</p>
       <h1 class="display">Claude Code workflows you can install in one line<span class="cursor" aria-hidden="true"></span></h1>
       <p class="lede">Plugins, skills and agents from one open repository. Search runs in your browser.</p>
       <label class="search"><span class="mono" aria-hidden="true">❯</span><span class="sr-only">Search the catalog</span>
