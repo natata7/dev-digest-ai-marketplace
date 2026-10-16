@@ -19,6 +19,13 @@ The authoritative version is `.claude-plugin/plugin.json`. Use SemVer:
 
 Do not rewrite a published tag. Use a new patch release for corrections.
 
-## Current baseline
+## 0.2.0
+
+- Full-depth `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` prompts generalized for any repository.
+- New `test-writer` and `doc-writer` agents, and the `/implement` orchestrator command.
+- New path-guard hook limiting where the spec, plan and documentation agents may write (requires `jq`).
+- `run` skill now carries the complete workflow retrospective with a ledger; its frontmatter name is `run`.
+
+## Baseline
 
 The initial marketplace release is `0.1.0`. Future releases should record notable workflow changes in this file or in a versioned changelog maintained alongside the plugin.

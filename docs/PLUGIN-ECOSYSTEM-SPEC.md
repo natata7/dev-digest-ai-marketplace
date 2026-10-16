@@ -10,7 +10,8 @@ The marketplace provides public, reusable Claude Code workflows. Components must
 
 Reusable foundation for repository-aware implementation work:
 
-- `paved-path` skill for discovery, focused changes, and validation.
+- `paved-path` skill for discovery, focused changes, and validation;
+- `engineering-insights` skill for the per-module `INSIGHTS.md` protocol;
 - shared conventions referenced by the other plugins.
 
 ### Research Tools
@@ -27,7 +28,9 @@ Composition dependency: uses Engineering Paved Path conventions when research fi
 Architecture and boundary review:
 
 - `architecture-reviewer` agent;
-- `architecture-review` skill.
+- `architecture-review` skill (review protocol);
+- `onion-architecture` and `ui-architecture` rule packs;
+- `pr-self-review` dispatcher skill.
 
 Composition dependency: uses Engineering Paved Path conventions for repository discovery and evidence-backed validation.
 
@@ -35,14 +38,19 @@ Composition dependency: uses Engineering Paved Path conventions for repository d
 
 Specification-driven delivery:
 
-- `spec-creator` agent;
-- `implementation-planner` agent;
-- `implementer` agent;
-- `plan-verifier` agent;
-- `run` skill (workflow retrospective);
+- `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`, `test-writer` and `doc-writer` agents;
+- `/implement` orchestrator command;
+- a path-guard hook that limits where the spec, plan and documentation agents may write;
+- `specification-driven-development` skill and `run` skill (workflow retrospective);
 - workflow README and release notes.
 
 Composition dependencies: consumes research and architecture findings when available, and uses Engineering Paved Path conventions for implementation and verification.
+
+### TypeScript Fullstack Skills
+
+Reference skills for a TypeScript stack: `zod`, `fastify-best-practices`, `drizzle-orm-patterns`, `postgresql-table-design`, `react-best-practices`, `react-testing-library`, `next-best-practices`, `typescript-expert`, `security`, `mermaid-diagram`.
+
+Composition dependency: referenced by name from Architecture Review's `ui-architecture` pack and SDD Engineering's planner; never required.
 
 ## Dependency graph
 
@@ -51,13 +59,16 @@ flowchart TD
   paved["Engineering Paved Path<br/>Reusable foundation"]
   research["Research Tools<br/>Researcher + evidence skill"]
   architecture["Architecture Review<br/>Architecture Reviewer + review skill"]
-  sdd["SDD Engineering<br/>Four delivery agents + Run"]
+  sdd["SDD Engineering<br/>Six agents + /implement + Run"]
+  stack["TypeScript Fullstack Skills<br/>Stack reference skills"]
 
   paved -->|shared conventions| research
   paved -->|shared conventions| architecture
   paved -->|shared conventions| sdd
   research -.->|optional findings| sdd
   architecture -.->|optional findings| sdd
+  stack -.->|optional skills| architecture
+  stack -.->|optional skills| sdd
 ```
 
 Solid edges describe documented composition. Dashed edges describe optional workflow hand-offs. These are not automatic install-time dependencies; every plugin remains independently installable.
@@ -70,9 +81,10 @@ flowchart LR
   research --> spec["Spec Creator"]
   request --> spec
   spec --> planner["Implementation Planner"]
-  planner --> implementer["Implementer"]
+  planner --> approval{{"Plan approved"}} --> implementer["/implement: Implementer"]
   implementer --> verifier["Plan Verifier"]
-  verifier --> retro["Run workflow retro"]
+  verifier --> tests["Test Writer / Doc Writer"]
+  tests --> retro["Run workflow retro"]
   architecture["Architecture Reviewer<br/>(optional)"] -.-> implementer
   architecture -.-> verifier
 ```

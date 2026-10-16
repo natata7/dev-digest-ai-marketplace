@@ -21,15 +21,18 @@ const filesUnder = async (dir) => {
 };
 
 const componentType = (file) => {
-  if (file.includes("/skills/")) return "skill";
-  if (file.includes("/agents/")) return "agent";
-  if (file.includes("/commands/")) return "command";
-  if (file.includes("/hooks/")) return "hook";
-  if (file.includes("/lsp/")) return "lsp";
+  if (/\/skills\/[^/]+\/SKILL\.md$/.test(file)) return "skill";
+  if (/\/agents\/[^/]+\.md$/.test(file)) return "agent";
+  if (/\/commands\/[^/]+\.md$/.test(file)) return "command";
+  if (/\/hooks\/hooks\.json$/.test(file)) return "hook";
+  if (/\/lsp\/[^/]+$/.test(file)) return "lsp";
   if (file.endsWith("/.mcp.json")) return "mcp";
   return "document";
 };
-const frontmatter = (text, key) => text.match(new RegExp(`^${key}:\\s*(.+)$`, "m"))?.[1]?.trim() ?? "";
+const frontmatter = (text, key) => {
+  const block = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+  return block.match(new RegExp(`^${key}:\\s*(.+)$`, "m"))?.[1]?.trim().replace(/^"(.*)"$/, "$1") ?? "";
+};
 
 const plugins = [];
 const pluginEntries = await readdir(pluginsDir, { withFileTypes: true });
@@ -55,10 +58,10 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
   for (const file of files.filter((candidate) => ["skill", "agent", "command", "hook", "mcp", "lsp"].includes(componentType(candidate)))) {
     const text = await readFile(file, "utf8");
     const type = componentType(file);
-    const fallbackName = file.split("/").pop().replace(/\.(md|json|yaml|yml|txt)$/i, "");
+    const fallbackName = type === "skill" ? file.split("/").at(-2) : file.split("/").pop().replace(/\.(md|json|yaml|yml|txt)$/i, "");
     componentArtifacts.push({
       id: `${manifest.name}:${type}:${fallbackName}`,
-      name: frontmatter(text, "name") || fallbackName,
+      name: frontmatter(text, "name") || (type === "hook" ? `${manifest.name} hooks` : fallbackName),
       type,
       description: frontmatter(text, "description") || `A ${type} provided by ${manifest.name}.`,
       parent: manifest.name,

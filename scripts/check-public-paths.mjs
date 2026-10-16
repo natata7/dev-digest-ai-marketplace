@@ -16,7 +16,7 @@ const filesUnder = async (directory) => {
   for (const entry of entries) {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) files.push(...(await filesUnder(path)));
-    else if (/\.(md|json|mjs|js)$/u.test(entry.name)) files.push(path);
+    else if (/\.(md|json|mjs|js|sh|py)$/u.test(entry.name)) files.push(path);
   }
   return files;
 };
