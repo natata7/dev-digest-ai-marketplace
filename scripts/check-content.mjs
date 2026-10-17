@@ -2,7 +2,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
-const ignoredDirectories = new Set([".git", ".claude", "node_modules"]);
+const ignoredDirectories = new Set([".git", ".claude", "node_modules", "screencast"]);
 const textExtensions = new Set([".json", ".md", ".mjs", ".js", ".css", ".html", ".yml", ".yaml", ".txt"]);
 const cyrillic = /[\u0400-\u04FF]/u;
 

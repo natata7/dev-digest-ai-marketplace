@@ -124,6 +124,11 @@ const detailView = (id) => {
   const children = state.items.filter((i) => i.parent === item.id);
   const related = state.items.filter((i) => i.type === item.type && i.id !== item.id).slice(0, 3);
   const keywords = (item.keywords ?? []).map((k) => `<span class="tag">${esc(k)}</span>`).join("");
+  const deps = (item.dependencies ?? []).map((d) => {
+    const target = state.items.find((i) => i.type === "plugin" && i.name === d.name);
+    const label = `${esc(d.name)}${d.version ? ` <span class="muted">${esc(d.version)}</span>` : ""}`;
+    return `<li>${target ? `<a class="open" href="#/tool/${encodeURIComponent(target.id)}">${label}</a>` : label}</li>`;
+  }).join("");
   const contents = item.type === "plugin"
     ? (children.length ? children.map((c) => `<li><span class="mono muted" style="font-size:12px">${esc(kindLabel(c.type))}</span><br><a class="open" style="font-size:16px" href="#/tool/${encodeURIComponent(c.id)}">${esc(c.name)}</a><div class="muted" style="font-size:15px;margin-top:4px">${esc(c.description)}</div></li>`).join("") : `<li class="muted">This plugin has no indexed skills, agents or commands.</li>`)
     : `<li><span class="mono" style="font-size:14px">${esc(item.sourcePath)}</span>${item.source ? `<div class="muted" style="margin-top:4px">Source: ${esc(JSON.stringify(item.source))}</div>` : ""}${parent ? `<div class="muted" style="margin-top:4px">Part of <a href="#/tool/${encodeURIComponent(parent.id)}">${esc(parent.name)}</a></div>` : ""}</li>`;
@@ -142,6 +147,7 @@ const detailView = (id) => {
           </div>
           <div class="tabpanel" data-panel="overview">
             ${keywords ? `<div class="tags">${keywords}</div>` : ""}
+            ${deps ? `<h2 class="display" style="margin-top:32px;font-size:20px">Dependencies</h2><p class="muted" style="margin:8px 0 0">Installed automatically with this plugin.</p><ul class="list" style="margin-top:12px">${deps}</ul>` : ""}
             ${related.length ? `<h2 class="display" style="margin-top:40px;font-size:20px">Related</h2><div class="grid" style="padding-bottom:0;margin-top:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))">${related.map((r) => `<article class="card" style="padding:16px;gap:6px"><span class="mono muted" style="font-size:12px">${esc(kindLabel(r.type))}</span><a class="open" style="font-size:15px" href="#/tool/${encodeURIComponent(r.id)}">${esc(r.name)}</a></article>`).join("")}</div>` : ""}
           </div>
           <div class="tabpanel" data-panel="contents" hidden><ul class="list">${contents}</ul></div>

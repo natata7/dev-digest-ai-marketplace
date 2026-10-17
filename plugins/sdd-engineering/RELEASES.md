@@ -14,10 +14,17 @@ The authoritative version is `.claude-plugin/plugin.json`. Use SemVer:
 2. Review all agent and skill prompts for public, repository-agnostic wording.
 3. Run strict marketplace validation and the content/path guards.
 4. Rebuild the static catalog.
-5. Create an immutable plugin tag such as `sdd-engineering-v0.2.0`.
+5. Create an immutable plugin tag such as `sdd-engineering--v1.0.0`.
 6. Verify installation and the complete SDD workflow from a clean checkout.
 
 Do not rewrite a published tag. Use a new patch release for corrections.
+
+## 1.0.0
+
+- First stable release. Declares `dependencies` on `engineering-paved-path`, `research-tools` and `architecture-review` (`^1.0`).
+- Adds the `trace-version.sh` SessionStart hook (local trace of the active version) and the `path-guard.test.sh` self-check.
+- Smoke evals live in the repository `evals/sdd-engineering/` (they load the plugin and its dependencies from this checkout).
+- Tag: `sdd-engineering--v1.0.0`.
 
 ## 0.2.0
 

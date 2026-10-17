@@ -24,7 +24,7 @@ const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
 if (manifest.name !== plugin) throw new Error(`Manifest name "${manifest.name}" does not match "${plugin}".`);
 
 const run = (command, commandArgs) => execFileSync(command, commandArgs, { cwd: root, stdio: "inherit" });
-const releaseTag = `${plugin}-v${normalizedVersion}`;
+const releaseTag = `${plugin}--v${normalizedVersion}`; // Claude Code resolves dependency ranges against <plugin>--v<version> tags
 console.log(`${apply ? "Preparing" : "Dry run for"} ${plugin} ${normalizedVersion}`);
 
 if (!apply) {
@@ -40,6 +40,8 @@ await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 run("claude", ["plugin", "validate", "--strict", root]);
 run("node", [join(root, "scripts", "build-index.mjs")]);
 if (tag) {
-  run("git", ["tag", "-a", releaseTag, "-m", `Release ${plugin} ${normalizedVersion}`]);
+  // claude plugin tag validates plugin.json against the marketplace entry and refuses a dirty tree or an existing tag,
+  // so commit the version bump first.
+  run("claude", ["plugin", "tag", join(root, "plugins", plugin), "--message", `Release ${plugin} %s`]);
   console.log(`Created ${releaseTag}. Push it explicitly with: git push origin ${releaseTag}`);
 }

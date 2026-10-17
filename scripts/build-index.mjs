@@ -79,6 +79,7 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
     version: manifest.version ?? null,
     author: manifest.author?.name ?? null,
     keywords: manifest.keywords ?? [],
+    dependencies: (manifest.dependencies ?? []).map((dep) => (typeof dep === "string" ? { name: dep, version: null } : { name: dep.name, version: dep.version ?? null })),
     category: manifest.keywords?.[0] ?? "general",
     sourcePath: relative(root, pluginRoot),
     install: `/plugin install ${manifest.name}@dev-digest-ai-marketplace`,

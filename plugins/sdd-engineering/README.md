@@ -19,7 +19,7 @@ Specification-driven development workflows that connect requirements, implementa
 - `agents/test-writer.md` — writes tests from requirements; edits test files only.
 - `agents/doc-writer.md` — turns plans and validation reports into documentation; Markdown only.
 - `commands/implement.md` — the orchestrator for a ready plan.
-- `hooks/hooks.json` + `hooks/path-guard.sh` — write guard for `spec-creator`, `implementation-planner` and `doc-writer`.
+- `hooks/hooks.json` — registers two hooks: `path-guard.sh` (write guard for `spec-creator`, `implementation-planner` and `doc-writer`; self-check in `path-guard.test.sh`) and `trace-version.sh` (SessionStart).
 - `skills/specification-driven-development/SKILL.md` — the loop and its principles.
 - `skills/run/SKILL.md` — manual workflow retrospective with a ledger.
 
@@ -30,9 +30,13 @@ Specification-driven development workflows that connect requirements, implementa
 - The guard resolves paths against `$CLAUDE_PROJECT_DIR` (or the current directory).
 - Optional: a design-tool MCP server (such as Figma) for design analysis, and a browser-automation MCP server (such as Playwright) for the UI gate in `/implement`.
 
+## Trace of the active version
+
+On every session start `trace-version.sh` appends one JSON line (`ts`, `plugin`, `version`, `root`) to `.claude/sdd-engineering-trace.jsonl` in the project. It is local only and never sent anywhere. Set `SDD_TRACE=off` to disable it or `SDD_TRACE_FILE` to move it. Pair it with `claude plugin list --json` to show which version a session actually loaded.
+
 ## Composition
 
-SDD Engineering is independently installable. It can consume findings from Research Tools (the `researcher` agent) and Architecture Review (the `architecture-reviewer` agent, used by `/implement`), and it follows the shared discovery and validation conventions from Engineering Paved Path. These are documented workflow hand-offs, not automatic installation dependencies; each step degrades gracefully when the other plugin is absent.
+SDD Engineering declares `dependencies` on Engineering Paved Path, Research Tools and Architecture Review (`^1.0`), so a single install enables the whole workflow: `researcher` for spec research, `architecture-reviewer` for the `/implement` review loop, and the shared conventions. Each hand-off still degrades gracefully if a dependency is disabled.
 
 See the repository's [plugin ecosystem specification](../../docs/PLUGIN-ECOSYSTEM-SPEC.md) for the dependency graph and public path rules.
 
