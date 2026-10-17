@@ -30,6 +30,13 @@ node scripts/build-stable-catalog.mjs --pin sdd-engineering=1.0.0 --out .claude-
 claude plugin validate --strict .
 ```
 
+Two wrappers do the above safely (dry run by default, they refuse to run off `main` or on a dirty tree):
+
+```bash
+scripts/tag-release.sh --apply --push        # tag every plugin at its plugin.json version and publish the tags
+scripts/promote-stable.sh --apply --push     # rebuild branch stable pinned to those tags and publish it
+```
+
 Because the stable catalog is the only difference between the branches, always rebuild it from `main`'s catalog instead of editing it by hand.
 
 ## Tags and dependencies
