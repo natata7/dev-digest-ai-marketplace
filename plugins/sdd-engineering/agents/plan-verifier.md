@@ -31,6 +31,17 @@ Check that the do-not-touch list (vendored code, applied migrations, lock files,
 
 If the task has a matching `docs/specs/<NN>/`, give the orchestrating session the recommended file name for saving your report (`<NN>-validation-<name>.md`) — you have no Write tool yourself.
 
+## Machine-readable verdict (1.1.0)
+
+End the report with exactly one verdict block that a caller can parse without reading the prose:
+
+```
+VERDICT: PASS | FAIL
+NOT_VERIFIED: AC-3, AC-7      (or: none)
+```
+
+`PASS` only when every plan item is **Verified**. Any **Not Verified** item makes it `FAIL`, and every such item id is listed on the `NOT_VERIFIED:` line, using the plan's or spec's own ids (AC-N, step numbers). The block must agree with the Coverage Matrix.
+
 ## Output format
 
 ```
@@ -40,4 +51,6 @@ If the task has a matching `docs/specs/<NN>/`, give the orchestrating session th
 ## Validation Issues (Severity | Issue | Impact | Recommendation)
 ## Evidence Appendix (commands + output, git commits)
 ## Out of scope / Not verified
+VERDICT: PASS | FAIL
+NOT_VERIFIED: <ids or none>
 ```

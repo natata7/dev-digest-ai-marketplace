@@ -27,7 +27,7 @@ const plugins = main.plugins.map((entry) => {
   const version = pins[entry.name] ?? newest(entry.name);
   if (!version) throw new Error(`No ${entry.name}--v* tag. Release the plugin first (scripts/release.mjs --apply --tag).`);
   if (!tags.includes(`${entry.name}--v${version}`)) throw new Error(`Tag ${entry.name}--v${version} does not exist.`);
-  return { ...entry, source: { source: "git-subdir", url: repo, path: entry.source.replace(/^\.\//, ""), ref: `${entry.name}--v${version}` } };
+  return { ...entry, source: { source: "git-subdir", url: `https://github.com/${repo}.git`, path: entry.source.replace(/^\.\//, ""), ref: `${entry.name}--v${version}` } };
 });
 
 const catalog = { ...main, name: `${main.name}-stable`, description: `Stable channel: ${main.description}`, plugins };
