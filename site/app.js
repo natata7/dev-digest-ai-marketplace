@@ -154,6 +154,7 @@ const detailView = (id) => {
         </div>
         <aside class="panel">
           ${item.install ? `<div class="muted" style="font-size:14px">1. Add the marketplace (once)</div><code class="cmd">${esc(ADD)}</code><button type="button" class="btn" data-copy="${esc(ADD)}" data-msg="Command copied">Copy add command</button><div class="muted" style="font-size:14px">2. Install</div><code class="cmd">${esc(item.install)}</code><button type="button" class="btn primary" style="min-height:52px" data-copy="${esc(item.install)}">Copy install command</button>` : ""}
+          ${item.stable ? `<div class="muted" style="font-size:14px;margin-top:8px">Stable channel · v${esc(item.stable.version)}</div><code class="cmd">/plugin marketplace add natata7/dev-digest-ai-marketplace#stable</code><code class="cmd">/plugin install ${esc(item.name)}@${esc(item.stable.marketplace)}</code><button type="button" class="btn" data-copy="/plugin install ${esc(item.name)}@${esc(item.stable.marketplace)}">Copy stable install</button>` : ""}
           <button type="button" class="btn" id="save"></button>
           <a class="btn" href="${esc(sourceUrl(item))}">View source →</a>
         </aside>
