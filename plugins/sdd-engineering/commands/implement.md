@@ -42,6 +42,7 @@ Before launching anything, list every edit the plan makes to a vendored/do-not-t
 ## 3. Verify (once)
 
 Run `plan-verifier` with the spec path (AC-N), the plan path, and "tests were deliberately not written in this run — report missing test coverage as a note, not as Not Verified; UI/browser-only AC → Not Verified (manual/e2e)". It runs the full typecheck/test/lint per touched package — nobody else does.
+Read the verifier's final `VERDICT:` / `NOT_VERIFIED:` block (not the prose) to decide whether a fix round is needed: `VERDICT: PASS` → no fix round; `FAIL` → the ids on `NOT_VERIFIED:` are the work list. If the block is missing, ask the verifier once to append it.
 Not Verified items that are code gaps → one fix round via `implementer`, then re-run the verifier on those items only. Save the verifier's report to `<spec folder>/NN-validation-<feature>.md` (you write it; the verifier cannot).
 
 ### 3b. UI gate (only when designs were supplied; run it early per §1, final pass here on changed screens)
