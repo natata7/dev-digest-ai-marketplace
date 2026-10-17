@@ -28,5 +28,7 @@ jobs:
         run: node scripts/check-content.mjs
       - name: Check public component paths
         run: node scripts/check-public-paths.mjs
+      - name: Test write guard
+        run: bash plugins/sdd-engineering/hooks/path-guard.test.sh
       - name: Check generated index
         run: test -s site/data/index.json

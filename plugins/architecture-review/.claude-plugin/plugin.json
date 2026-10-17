@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "architecture-review",
   "description": "Architecture review guidance for boundaries, dependencies, and maintainability.",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": {
     "name": "Dev Digest AI"
   },

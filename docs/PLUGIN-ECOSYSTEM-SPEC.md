@@ -71,7 +71,7 @@ flowchart TD
   stack -.->|optional skills| sdd
 ```
 
-Solid edges describe documented composition. Dashed edges describe optional workflow hand-offs. These are not automatic install-time dependencies; every plugin remains independently installable.
+Solid edges describe composition. For SDD Engineering the three solid edges are declared `dependencies` in `plugin.json` (`^1.0`), so installing it installs and enables Engineering Paved Path, Research Tools and Architecture Review; Claude Code resolves the ranges against `<plugin>--v<version>` tags. The other plugins remain independently installable with no dependencies. Dashed edges describe optional workflow hand-offs between installed plugins.
 
 ## Workflow
 

@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "engineering-paved-path",
   "description": "Reusable engineering workflows and delivery guardrails.",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": {
     "name": "Dev Digest AI"
   },

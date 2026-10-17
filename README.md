@@ -31,7 +31,7 @@ Release and rollback helpers are dry-run by default:
 
 ```bash
 node scripts/release.mjs --plugin engineering-paved-path --version 0.2.0
-node scripts/rollback.mjs --plugin engineering-paved-path --to engineering-paved-path-v0.1.0
+node scripts/rollback.mjs --plugin engineering-paved-path --to engineering-paved-path--v0.1.0
 ```
 
 See [RELEASES.md](docs/RELEASES.md) before using `--apply`.
