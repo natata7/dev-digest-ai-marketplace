@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
@@ -33,6 +34,14 @@ const frontmatter = (text, key) => {
   const block = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
   return block.match(new RegExp(`^${key}:\\s*(.+)$`, "m"))?.[1]?.trim().replace(/^"(.*)"$/, "$1") ?? "";
 };
+
+// Stable channel pins (branch `stable`, see docs/RELEASES.md). Optional: absent in a checkout without that branch.
+const stablePins = (() => {
+  try {
+    const catalog = JSON.parse(execFileSync("git", ["show", "origin/stable:.claude-plugin/marketplace.json"], { cwd: root, stdio: ["ignore", "pipe", "ignore"] }).toString());
+    return Object.fromEntries(catalog.plugins.map((entry) => [entry.name, { version: entry.source?.ref?.split("--v")[1] ?? null, marketplace: catalog.name }]));
+  } catch { return {}; }
+})();
 
 const plugins = [];
 const pluginEntries = await readdir(pluginsDir, { withFileTypes: true });
@@ -79,6 +88,7 @@ for (const pluginEntry of pluginEntries.filter((entry) => entry.isDirectory())) 
     version: manifest.version ?? null,
     author: manifest.author?.name ?? null,
     keywords: manifest.keywords ?? [],
+    stable: stablePins[manifest.name] ?? null,
     dependencies: (manifest.dependencies ?? []).map((dep) => (typeof dep === "string" ? { name: dep, version: null } : { name: dep.name, version: dep.version ?? null })),
     category: manifest.keywords?.[0] ?? "general",
     sourcePath: relative(root, pluginRoot),

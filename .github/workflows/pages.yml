@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Fetch stable channel pins
+        run: git fetch --no-tags origin stable:refs/remotes/origin/stable || true
       - name: Build catalog
         env:
           SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha }}
