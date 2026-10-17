@@ -1,6 +1,6 @@
 ---
 type: llm
-focus: trace
+focus: { source: file, path: docs/specs/01-spec-todo-json/01-spec-todo-json.md }
 ---
 
 PASS if the written specification contains acceptance criteria with IDs (AC-1, AC-2, ...) phrased in EARS form (for example "WHEN ..., the system shall ..." or "IF ..., THEN the system shall ..."), each describing one testable behavior, and it covers at least one error or edge case (for example invalid output or stderr handling) and states non-goals.

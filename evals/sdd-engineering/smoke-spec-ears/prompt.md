@@ -9,6 +9,8 @@ allowed_tools: [Agent, Read, Glob, Grep]
 
 Use the spec-creator agent to write a specification for this feature, then reply with the path of the spec file.
 
+Write it to exactly this path so the result can be checked: docs/specs/01-spec-todo-json/01-spec-todo-json.md
+
 Feature: a small command-line todo tool gets a `--json` flag on its `list` command that prints the todos as a JSON array instead of a table.
 
 Facts already confirmed with the user, so do not ask questions:
