@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "dev-digest-ai-marketplace",
-  "description": "Curated Claude Code plugins, skills, agents, and engineering workflows.",
+  "name": "dev-digest-ai-marketplace-stable",
+  "description": "Stable channel: Curated Claude Code plugins, skills, agents, and engineering workflows.",
   "owner": {
     "name": "Dev Digest AI",
     "url": "https://github.com/natata7"
@@ -9,7 +9,12 @@
   "plugins": [
     {
       "name": "engineering-paved-path",
-      "source": "./plugins/engineering-paved-path",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/natata7/dev-digest-ai-marketplace.git",
+        "path": "plugins/engineering-paved-path",
+        "ref": "engineering-paved-path--v1.0.0"
+      },
       "description": "Reusable engineering workflows and delivery guardrails.",
       "category": "development",
       "keywords": [
@@ -20,7 +25,12 @@
     },
     {
       "name": "research-tools",
-      "source": "./plugins/research-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/natata7/dev-digest-ai-marketplace.git",
+        "path": "plugins/research-tools",
+        "ref": "research-tools--v1.0.0"
+      },
       "description": "Research, source verification, and evidence-collection workflows.",
       "category": "research",
       "keywords": [
@@ -31,7 +41,12 @@
     },
     {
       "name": "architecture-review",
-      "source": "./plugins/architecture-review",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/natata7/dev-digest-ai-marketplace.git",
+        "path": "plugins/architecture-review",
+        "ref": "architecture-review--v1.0.0"
+      },
       "description": "Architecture review guidance for boundaries, dependencies, and maintainability.",
       "category": "architecture",
       "keywords": [
@@ -42,7 +57,12 @@
     },
     {
       "name": "sdd-engineering",
-      "source": "./plugins/sdd-engineering",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/natata7/dev-digest-ai-marketplace.git",
+        "path": "plugins/sdd-engineering",
+        "ref": "sdd-engineering--v1.0.0"
+      },
       "description": "Specification-driven development workflows from requirements to verification.",
       "category": "development",
       "keywords": [
@@ -54,7 +74,12 @@
     },
     {
       "name": "typescript-fullstack-skills",
-      "source": "./plugins/typescript-fullstack-skills",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/natata7/dev-digest-ai-marketplace.git",
+        "path": "plugins/typescript-fullstack-skills",
+        "ref": "typescript-fullstack-skills--v0.1.0"
+      },
       "description": "Stack skills for TypeScript full-stack work: Zod, Fastify, Drizzle, PostgreSQL, React, Next.js, security and diagrams.",
       "category": "development",
       "keywords": [
